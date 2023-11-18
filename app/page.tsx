@@ -13,8 +13,6 @@ export default function Home() {
 
   const dropComponent = (event: any) => {
     if (isInBox) {
-      // console.log("dropped");
-      console.log(selected);
       setComponentData([...componentData, selected]);
       setIsInBox(false);
     }

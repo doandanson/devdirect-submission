@@ -19,12 +19,13 @@ const Viewer = ({ componentData, setComponentData }: any) => {
   const [selectedComponent, setSelectedComponent] = useState<any>({});
   const [index, setIndex] = useState<any>();
 
+  console.log(componentData);
   useEffect(() => {
     setComponentArray(componentData);
   }, [componentData]);
 
   const openComponentDataEditor = (index: number) => {
-    setSelectedComponent(componentArray.props[index]);
+    setSelectedComponent(componentArray[index]);
     setIndex(index);
     setOpen(true);
   };
@@ -43,9 +44,12 @@ const Viewer = ({ componentData, setComponentData }: any) => {
 
   const handleUpdateArray = () => {
     const tempArray = JSON.parse(JSON.stringify(componentArray));
-    console.log(tempArray);
-    setComponentData(...componentData, tempArray);
+    tempArray.splice(index, 1, selectedComponent);
+    setComponentData(tempArray);
+    setOpen(false);
   };
+
+  console.log(componentArray);
 
   return (
     <div className="flex flex-col justify-center py-2 bg-white">
