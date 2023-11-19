@@ -20,23 +20,19 @@ const style = {
 };
 
 export default function Home() {
-  const [test, setTest] = useState("");
   const [isInBox, setIsInBox] = useState(false);
   const [componentData, setComponentData] = useState<any>([]);
-  const [selected, setSelected] = useState<any>({});
   const [openImportWebLayout, setOpenImportWebLayout] = useState(false);
   const [importEvent, setImportEvent] = useState<any>();
 
+  let selected = {};
+
   const dropComponent = (event: any) => {
+    event.preventDefault();
     if (isInBox) {
       setComponentData([...componentData, selected]);
       setIsInBox(false);
     }
-    setTest("");
-  };
-
-  const addSelector = (component: any) => {
-    setSelected(component);
   };
 
   const exportWebsiteLayout = () => {
@@ -66,10 +62,10 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-wrap flex-col">
+    <div className="h-screen">
       <div
         id="header"
-        className="w-full flex flex-row space-x-4 py-3  justify-center shadow-xl"
+        className="w-full h-50 flex flex-row space-x-4 py-3  justify-center shadow-xl h-fit"
       >
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
@@ -85,7 +81,7 @@ export default function Home() {
         </button>
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
-          onClick={() => console.log(componentData)}
+          onClick={() => {}}
         >
           load
         </button>
@@ -113,56 +109,69 @@ export default function Home() {
           </button>
         </Link>
       </div>
-      <div className="w-full flex flex-row">
+      <div className="w-full h-full flex flex-row">
         <div id="component-selector" className="shadow-inner w-1/4 ">
           <div
-            draggable={true}
+            draggable
             className="w-full py-5 px-10 text-center border-solid border-2"
-            onDrag={() =>
-              addSelector({
+            onDrag={() => {
+              selected = {
                 component: "Paragraph",
                 props: {
                   text: "paragraph",
                 },
-              })
-            }
-            onDragEnd={(e) => dropComponent(e)}
+              };
+            }}
+            onDragEnd={(e) => {
+              dropComponent(e);
+            }}
           >
             paragraph
           </div>
           <div
             draggable
             className="w-full py-5 px-10 text-center border-solid border-2"
-            onDrag={() =>
-              addSelector({
+            onDrag={() => {
+              selected = {
                 component: "Button",
                 props: {
                   text: "Button",
                   alert: "",
                 },
-              })
-            }
-            onDragEnd={(e) => dropComponent(e)}
+              };
+            }}
+            onDragEnd={(e) => {
+              dropComponent(e);
+              e.preventDefault();
+            }}
           >
             button
           </div>
         </div>
-        <div id="viewer" className="flex flex-col w-3/4 ">
-          <div className="w-full border-b-2 p-5">
+        <div id="viewer" className="h-full w-3/4 ">
+          <div className="w-full h-50 border-b-2 p-5">
             <MouseTracker />
-            <p>dargging: {test}</p>
           </div>
-          <div className="p-5 bg-slate-300">
+          <div className="p-5 h-full justify-center">
             <Viewer
               componentData={componentData}
               setComponentData={setComponentData}
             />
-            <div className="w-full flex justify-center">
-              <AddIcon
-                className="w-full bg-white"
-                onDragEnter={() => setIsInBox(true)}
-                onDragLeave={() => setIsInBox(false)}
-              ></AddIcon>
+            <div
+              className="w-full h-14 bg-slate-200 flex justify-center"
+              onDragOver={(e) => {
+                e.preventDefault();
+              }}
+              onDragEnter={(e) => {
+                setIsInBox(true);
+                e.preventDefault();
+              }}
+              onDragLeave={(e) => {
+                setIsInBox(false);
+                e.preventDefault();
+              }}
+            >
+              <AddIcon className="h-full" />
             </div>
           </div>
         </div>
