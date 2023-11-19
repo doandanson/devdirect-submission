@@ -4,6 +4,7 @@ import { useState } from "react";
 import Viewer from "./components/viewer";
 import MouseTracker from "./components/mouseTracking";
 import AddIcon from "@mui/icons-material/Add";
+import Link from "next/link";
 
 export default function Home() {
   const [test, setTest] = useState("");
@@ -31,7 +32,15 @@ export default function Home() {
         id="header"
         className="w-full flex flex-row space-x-4 py-3  justify-center shadow-xl"
       >
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
+          onClick={() =>
+            localStorage.setItem(
+              "componentsData",
+              JSON.stringify(componentData)
+            )
+          }
+        >
           save
         </button>
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">
@@ -49,9 +58,11 @@ export default function Home() {
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">
           redo
         </button>
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">
-          view
-        </button>
+        <Link href="/consumer" target="_blank">
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">
+            view
+          </button>
+        </Link>
       </div>
       <div className="w-full flex flex-row">
         <div id="component-selector" className="shadow-inner w-1/4 ">

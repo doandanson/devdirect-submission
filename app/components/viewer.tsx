@@ -19,7 +19,6 @@ const Viewer = ({ componentData, setComponentData }: any) => {
   const [selectedComponent, setSelectedComponent] = useState<any>({});
   const [index, setIndex] = useState<any>();
 
-  console.log(componentData);
   useEffect(() => {
     setComponentArray(componentData);
   }, [componentData]);
@@ -48,8 +47,6 @@ const Viewer = ({ componentData, setComponentData }: any) => {
     setComponentData(tempArray);
     setOpen(false);
   };
-
-  console.log(componentArray);
 
   return (
     <div className="flex flex-col justify-center py-2 bg-white">
