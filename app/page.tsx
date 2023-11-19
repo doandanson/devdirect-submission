@@ -1,16 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Viewer from "./components/viewer";
 import MouseTracker from "./components/mouseTracking";
 import AddIcon from "@mui/icons-material/Add";
 import Link from "next/link";
+import { Box, Modal } from "@mui/material";
+
+const style = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
 
 export default function Home() {
   const [test, setTest] = useState("");
   const [isInBox, setIsInBox] = useState(false);
   const [componentData, setComponentData] = useState<any>([]);
   const [selected, setSelected] = useState<any>({});
+  const [openImportWebLayout, setOpenImportWebLayout] = useState(false);
+  const [jsonWebLayout, setJsonWebLayout] = useState<any>();
+  const [importEvent, setImportEvent] = useState<any>();
 
   const dropComponent = (event: any) => {
     if (isInBox) {
@@ -24,7 +40,35 @@ export default function Home() {
     setSelected(component);
   };
 
-  let mockComponent = componentData;
+  const exportWebsiteLayout = () => {
+    const websiteLayout = JSON.stringify(componentData);
+    const blob = new Blob([websiteLayout], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = "websiteLayout.json";
+    anchor.click();
+
+    URL.revokeObjectURL(url);
+  };
+
+  const importWebsiteLayout = (event: any) => {
+    const file = event.target.files[0];
+    const reader: any = new FileReader();
+
+    reader.onload = () => {
+      const parsedWebLayout = JSON.parse(reader.result);
+      setJsonWebLayout(parsedWebLayout);
+    };
+
+    reader.readAsText(file);
+    setOpenImportWebLayout(false);
+  };
+
+  useEffect(() => {
+    setComponentData(jsonWebLayout);
+  }, [jsonWebLayout]);
 
   return (
     <div className="flex flex-wrap flex-col">
@@ -46,10 +90,16 @@ export default function Home() {
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">
           load
         </button>
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
+          onClick={() => exportWebsiteLayout()}
+        >
           export
         </button>
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
+          onClick={() => setOpenImportWebLayout(true)}
+        >
           import
         </button>
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">
@@ -118,6 +168,29 @@ export default function Home() {
           </div>
         </div>
       </div>
+      <Modal
+        open={openImportWebLayout}
+        onClose={() => setOpenImportWebLayout(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style} className="flex flex-col">
+          <div className="w-full flex flex-row py-3 space-x-2">
+            <input
+              type="file"
+              accept="application/json"
+              onChange={(e) => setImportEvent(e)}
+            />
+          </div>
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
+            onClick={() => importWebsiteLayout(importEvent)}
+            // onClick={() => console.log(importEvent)}
+          >
+            import
+          </button>
+        </Box>
+      </Modal>
     </div>
   );
 }
