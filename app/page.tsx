@@ -25,7 +25,6 @@ export default function Home() {
   const [componentData, setComponentData] = useState<any>([]);
   const [selected, setSelected] = useState<any>({});
   const [openImportWebLayout, setOpenImportWebLayout] = useState(false);
-  const [jsonWebLayout, setJsonWebLayout] = useState<any>();
   const [importEvent, setImportEvent] = useState<any>();
 
   const dropComponent = (event: any) => {
@@ -59,16 +58,12 @@ export default function Home() {
 
     reader.onload = () => {
       const parsedWebLayout = JSON.parse(reader.result);
-      setJsonWebLayout(parsedWebLayout);
+      setComponentData(parsedWebLayout);
     };
 
     reader.readAsText(file);
     setOpenImportWebLayout(false);
   };
-
-  useEffect(() => {
-    setComponentData(jsonWebLayout);
-  }, [jsonWebLayout]);
 
   return (
     <div className="flex flex-wrap flex-col">
