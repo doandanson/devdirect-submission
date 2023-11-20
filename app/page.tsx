@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Viewer from "./components/viewer";
 import MouseTracker from "./components/mouseTracking";
 import AddIcon from "@mui/icons-material/Add";
 import Link from "next/link";
 import { Box, Modal } from "@mui/material";
+import { Component } from "./TypesAndInterfaces/type";
 
 const style = {
   position: "absolute" as "absolute",
@@ -21,13 +22,13 @@ const style = {
 
 export default function Home() {
   const [isInBox, setIsInBox] = useState(false);
-  const [componentData, setComponentData] = useState<any>([]);
+  const [componentData, setComponentData] = useState<Array<Component>>([]);
   const [openImportWebLayout, setOpenImportWebLayout] = useState(false);
-  const [importEvent, setImportEvent] = useState<any>();
 
-  let selected = {};
+  let selected = {} as Component;
+  let importFile = {} as FileList;
 
-  const dropComponent = (event: any) => {
+  const dropComponent = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     if (isInBox) {
       setComponentData([...componentData, selected]);
@@ -48,17 +49,21 @@ export default function Home() {
     URL.revokeObjectURL(url);
   };
 
-  const importWebsiteLayout = (event: any) => {
-    const file = event.target.files[0];
-    const reader: any = new FileReader();
+  const importWebsiteLayout = (importedFile: FileList) => {
+    if (importFile) {
+      if (importedFile.length > 0) {
+        const file = importedFile[0];
+        const reader: any = new FileReader();
 
-    reader.onload = () => {
-      const parsedWebLayout = JSON.parse(reader.result);
-      setComponentData(parsedWebLayout);
-    };
+        reader.onload = () => {
+          const parsedWebLayout = JSON.parse(reader.result);
+          setComponentData(parsedWebLayout);
+        };
 
-    reader.readAsText(file);
-    setOpenImportWebLayout(false);
+        reader.readAsText(file);
+        setOpenImportWebLayout(false);
+      }
+    } else console.log("no file selected");
   };
 
   return (
@@ -187,12 +192,20 @@ export default function Home() {
             <input
               type="file"
               accept="application/json"
-              onChange={(e) => setImportEvent(e)}
+              onChange={(e) => {
+                const files = e.target.files;
+
+                if (files) {
+                  importFile = files;
+                } else {
+                  console.log("no file selected");
+                }
+              }}
             />
           </div>
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
-            onClick={() => importWebsiteLayout(importEvent)}
+            onClick={() => importWebsiteLayout(importFile)}
           >
             import
           </button>

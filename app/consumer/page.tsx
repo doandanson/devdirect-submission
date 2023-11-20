@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Component } from "../TypesAndInterfaces/type";
 
 const Consumer = () => {
-  const [componentData, setComponentData] = useState<any>([]);
+  const [componentData, setComponentData] = useState<Array<Component>>([]);
 
   useEffect(() => {
     const storedComponentDataString: string | any =
